@@ -43,6 +43,11 @@ class Home extends React.Component {
         })
     }
 
+    navigateToUpload(event) {
+        event.preventDefault()
+        this.props.history.push("/upload/")
+    }
+
     componentWillUnmount() {
         this.unlisten()
     }
@@ -63,7 +68,7 @@ class Home extends React.Component {
                                 <br />
 
                                 <div style={{ display: 'inline-block' }}>
-                                    <a href="/" className="button is-link"><i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload yours</a>
+                                    <a href="/" className="button is-link" onClick={(e) => this.navigateToUpload(e)}><i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload yours</a>
                                     <a href="/" className="button is-dark is-inverted is-outlined" style={{ marginLeft: 10 }}>About&nbsp;<strong>Reme by GR</strong></a>
                                 </div>
                             </div>

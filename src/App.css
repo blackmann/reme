@@ -23,6 +23,22 @@
   opacity: 0.5;
 }
 
+.upload-box {
+  border-radius: 8px;
+  border-width: 2px;
+  border-style: dashed;
+  border-color: #dddddd;
+  height: 300px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
 @media screen and (max-width: 768px) {
   .space-up-mobile {
     margin-top: 60px;

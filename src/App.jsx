@@ -3,6 +3,7 @@ import { HashRouter, Route } from "react-router-dom"
 import './App.css'
 import Home from './pages/Home';
 import Footer from './components/Footer';
+import Upload from './pages/Upload';
 
 class App extends Component {
   render() {
@@ -10,7 +11,8 @@ class App extends Component {
       <div>
         <HashRouter>
           <div>
-            <Route path="/" component={Home} />
+            <Route path="/upload/" component={Upload} />
+            <Route path={["/", "/detail/"]} exact component={Home} />
           </div>
         </HashRouter>
 

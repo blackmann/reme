@@ -8,11 +8,11 @@ export default class extends React.Component {
                 <div className="reme-image" style={{backgroundImage: `url("https://via.placeholder.com/400?text=Reme+by+Degreat`}}></div>
                 <div className="reme-action">
                     <div  style={{float: 'left'}}>
-                        <i class="far fa-arrow-alt-circle-down has-text-link">&nbsp;</i><span className="has-text-grey">{parseInt((Math.random()*100))}</span>
+                        <i className="far fa-arrow-alt-circle-down has-text-link">&nbsp;</i><span className="has-text-grey">{parseInt((Math.random()*100))}</span>
                     </div>
 
                     <div style={{float: 'right'}}>
-                        <a href="/" className="button"><i class="fas fa-arrow-down"></i>&nbsp;Download</a>
+                        <a href="/" className="button"><i className="fas fa-arrow-down"></i>&nbsp;Download</a>
                     </div>
                 </div>
             </div>

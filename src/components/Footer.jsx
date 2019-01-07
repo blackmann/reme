@@ -21,7 +21,7 @@ export default class extends React.Component {
 
                             <div className="column space-up-mobile">
                                 <img src={reme} alt="Reme by GR" width="150"/>
-                                <p className="has-text-grey-light">Reme by GR🤟</p>
+                                <p className="has-text-grey-light">Reme by GR<span role="img" aria-label="rock n roll">🤟</span></p>
                                 <p className="has-text-grey-light">&copy; 2019 <a href="https://degreat.co.uk/" className="has-text-grey-light">De-Great Yartey</a></p>
                             </div>
                         </div>

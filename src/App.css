@@ -1,6 +1,13 @@
 .reme-image {
   background-size: cover;
   height: 300px;
+  cursor: pointer;
+}
+
+.reme-image-small {
+  background-size: cover;
+  height: 200px;
+  cursor: pointer;
 }
 
 .reme-action {
@@ -19,5 +26,14 @@
 @media screen and (max-width: 768px) {
   .space-up-mobile {
     margin-top: 60px;
+  }
+
+  .modal-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .reme-image-small {
+    height: 150px;
   }
 }

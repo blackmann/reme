@@ -3,6 +3,7 @@ import RemeItem from "../components/RemeItem"
 
 import reme from "../reme.png"
 import sample from "../sample.jpg"
+import RemeDetail from "../components/RemeDetail";
 
 class Home extends React.Component {
 
@@ -62,11 +63,13 @@ class Home extends React.Component {
                     <div className="container" style={{marginTop: 15}}>
                     <div className="columns is-multiline">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((item) => {
-                            return <RemeItem key={item}/>
+                            return <RemeItem key={item} onSelect={() => this.remeDetail.show(item)}/>
                         })}
                     </div>
                     </div>
                 </section>
+
+                <RemeDetail ref={(node) => this.remeDetail = node}/>
             </div>
         )
     }

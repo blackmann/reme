@@ -30,7 +30,6 @@ class Home extends React.Component {
 
     componentDidMount() {
         this.unlisten = this.props.history.listen((location) => {
-            console.log(location)
             if (location.pathname !== "/detail/") {
                 this.hideDetail()
             }

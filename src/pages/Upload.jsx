@@ -24,7 +24,16 @@ class Upload extends React.Component {
     removeTag(tag) {
         const _tags = this.state.tags
         _tags.splice(this.state.tags.indexOf(tag), 1)
-        this.setState({tags: _tags})
+        this.setState({ tags: _tags })
+    }
+
+    showPicker() {
+        this.imageInput.click()
+    }
+
+    handleFile(e) {
+        const imageFile = URL.createObjectURL(e.target.files[0])
+        this.setState({selectedImageFile: imageFile})
     }
 
     render() {
@@ -37,7 +46,7 @@ class Upload extends React.Component {
 
                     <div className="columns">
                         <div className="column">
-                            <div className="upload-box">
+                            <div className="upload-box" onClick={() => this.showPicker()} style={{backgroundImage: `url(${this.state.selectedImageFile})`}}>
                                 <p className="is-size-5">Click here to pick image</p>
                             </div>
                         </div>
@@ -47,13 +56,15 @@ class Upload extends React.Component {
                             <p className="has-text-grey">Provide keywords that will make finding this reme easier. You can use the name of the item, celebrity, action, dress, text, etc. found in the image.</p>
 
                             <p className="has-text-weight-bold">Add as many tags as you want</p>
-                            <br/>
+                            <br />
                             <div className="tags">
                                 {this.state.tags.map((item, index) => {
                                     return (
-                                        <span className="tag is-medium is-warning" key={index}>
+                                        <span className="tag is-medium is-warning"
+                                            key={index}>
                                             {item}
-                                            <button className="delete is-small" onClick={() => this.removeTag(item)}></button>
+                                            <button className="delete is-small"
+                                                onClick={() => this.removeTag(item)}></button>
                                         </span>
                                     )
                                 })}
@@ -85,6 +96,13 @@ class Upload extends React.Component {
                         </div>
                     </div>
                 </div>
+                <input type="file"
+                    accept="image/*"
+                    name="reme-image"
+                    id="reme-image"
+                    ref={(node) => this.imageInput = node}
+                    style={{ display: 'none' }}
+                    onChange={(e) => this.handleFile(e)} />
             </section>
         )
     }

@@ -28,15 +28,12 @@
   border-width: 2px;
   border-style: dashed;
   border-color: #dddddd;
-  height: 300px;
+  height: 400px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.inline-block {
-  display: inline-block;
+  background-size: cover;
 }
 
 @media screen and (max-width: 768px) {
@@ -51,5 +48,9 @@
 
   .reme-image-small {
     height: 150px;
+  }
+
+  .upload-box {
+    height: 300px;
   }
 }

@@ -1,4 +1,23 @@
-.reme-item {
+.reme-image {
   background-size: cover;
   height: 300px;
+}
+
+.reme-action {
+  padding: 5px 0;
+}
+
+.footer li a {
+  color: #ddd;
+  transition: opacity 250ms;
+}
+
+.footer li a:hover {
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 768px) {
+  .space-up-mobile {
+    margin-top: 60px;
+  }
 }

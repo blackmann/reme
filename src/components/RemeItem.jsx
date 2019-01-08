@@ -12,7 +12,7 @@ export default class extends React.Component {
         return (
             <div className="column is-one-third" style={{ marginBottom: 20 }}>
                 <div className="reme-image" style={{ backgroundImage: `url("${reme.media}` }} onClick={() => this.props.onSelect()}></div>
-                <div className="reme-action">
+                <div className="reme-action is-clearfix">
                     <div style={{ float: 'left' }}>
                         <i className="far fa-arrow-alt-circle-down has-text-link">&nbsp;</i><span className="has-text-grey">{reme.downloads}</span>
                     </div>

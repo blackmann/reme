@@ -2,6 +2,7 @@
   background-size: cover;
   height: 300px;
   cursor: pointer;
+  border-radius: 8px;
 }
 
 .reme-image-small {

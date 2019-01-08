@@ -1,7 +1,5 @@
 import React from "react"
 
-const sampleTags = "laugh,hilarious,crazy,unknown,messi".split(",")
-
 export default class extends React.Component {
     constructor(props) {
         super(props)
@@ -69,7 +67,7 @@ export default class extends React.Component {
 
                         <p className="title is-size-6">Keywords</p>
                         <div className="tags">
-                            {sampleTags.map((item, index) => {
+                            {reme.tags.map((item, index) => {
                                 return <span className="tag is-medium is-link" key={index}>{item}</span>
                             })}
                         </div>

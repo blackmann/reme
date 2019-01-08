@@ -129,7 +129,7 @@ class Upload extends React.Component {
         return (
             <section className="section">
                 <div className="container">
-                    <img src={remeBlack} alt="Reme by GR" width="80" />
+                    <Link to="/"><img src={remeBlack} alt="Reme by GR" width="80" /></Link>
                     <br /><br />
                     <p className="title is-size-5">Upload Reme</p>
 

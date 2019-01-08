@@ -1,5 +1,6 @@
 import React from "react"
 import reme from "../reme.png"
+import { Link } from "react-router-dom"
 
 export default class extends React.Component {
 
@@ -12,7 +13,7 @@ export default class extends React.Component {
                             <div className="column">
                             <p className="title is-size-6 is-uppercase has-text-grey">More</p>
                                 <ul>
-                                    <li><a href="/">Upload a Reme</a></li>
+                                    <li><Link to="/upload/">Upload a Reme</Link></li>
                                     <li><a href="/">About</a></li>
                                     <li><a href="/">Feedback</a></li>
                                     <li><a href="/">Terms & Privacy</a></li>

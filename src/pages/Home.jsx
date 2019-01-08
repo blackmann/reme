@@ -190,7 +190,7 @@ class Home extends React.Component {
                             })}
                         </div>
 
-                        <div className="has-text-centered">
+                        <div className="has-text-centered" style={{marginTop: 10}}>
                             {this.state.fetching ? (
                                 <button className="button is-loading">Fetching Remes...</button>
                             ) : (

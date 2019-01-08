@@ -13,10 +13,11 @@ class App extends Component {
           <div>
             <Route path="/upload/" component={Upload} />
             <Route path={["/", "/detail/"]} exact component={Home} />
+
+
+            <Footer />
           </div>
         </HashRouter>
-
-        <Footer />
       </div>
     );
   }

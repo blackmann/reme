@@ -133,14 +133,6 @@ class Upload extends React.Component {
                     <br /><br />
                     <p className="title is-size-5">Upload Reme</p>
 
-                    {this.state.uploadSuccess && (
-                        <div className="notification is-primary">
-                            <button className="delete"></button>
-                            Your reme has been uploaded successfully. Find it in the Recent section on the homepage.
-                            <Link to="/">Go Home</Link>
-                        </div>
-                    )}
-
                     <div className="columns">
                         <div className="column">
                             <div className="upload-box" onClick={() => this.showPicker()} style={{ backgroundImage: `url(${this.state.selectedImageFile})` }}>
@@ -208,6 +200,13 @@ class Upload extends React.Component {
 
                         </div>
                     </div>
+                    {this.state.uploadSuccess && (
+                        <div className="notification is-primary">
+                            <button className="delete"></button>
+                            Your reme has been uploaded successfully. Find it in the Recent section on the homepage.
+                            <Link to="/">Go Home</Link>
+                        </div>
+                    )}
                 </div>
                 <input type="file"
                     accept="image/*"

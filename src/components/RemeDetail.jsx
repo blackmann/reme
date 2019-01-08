@@ -1,5 +1,6 @@
 import React from "react"
 import axios from "axios"
+import ReactGA from "react-ga"
 
 export default class extends React.Component {
     constructor(props) {
@@ -19,6 +20,9 @@ export default class extends React.Component {
     show(reme) {
         this.setState({ show: true, currentItem: reme })
         this.fetchSimilar(reme)
+
+        ReactGA.initialize('UA-131943593-1')
+        ReactGA.modalview('/details/')
     }
 
     replace(reme) {

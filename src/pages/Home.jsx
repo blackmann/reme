@@ -1,6 +1,7 @@
 import React from "react"
 import { withRouter } from "react-router-dom"
 import axios from "axios"
+import ReactGA from "react-ga"
 import RemeItem from "../components/RemeItem"
 import RemeDetail from "../components/RemeDetail"
 
@@ -15,7 +16,8 @@ class Home extends React.Component {
             fetching: false,
             popularRemes: [],
             recentRemes: [],
-            sort: 'popular', // or recent
+            searchResults: [],
+            sort: 'popular', // or recent or search
         }
 
         this.popularRemesPage = 0
@@ -51,6 +53,12 @@ class Home extends React.Component {
             .then(error => {
 
             })
+
+        ReactGA.initialize('UA-131943593-1')
+        ReactGA.event({
+            category: 'User',
+            action: 'Download reme'
+        })
     }
 
     fetchRemes(sort) {
@@ -119,6 +127,9 @@ class Home extends React.Component {
         })
 
         this.fetchIfZero(this.state.sort)
+
+        ReactGA.initialize('UA-131943593-1')
+        ReactGA.pageview('/')
     }
 
     componentWillUnmount() {
@@ -190,7 +201,7 @@ class Home extends React.Component {
                             })}
                         </div>
 
-                        <div className="has-text-centered" style={{marginTop: 10}}>
+                        <div className="has-text-centered" style={{ marginTop: 10 }}>
                             {this.state.fetching ? (
                                 <button className="button is-loading">Fetching Remes...</button>
                             ) : (

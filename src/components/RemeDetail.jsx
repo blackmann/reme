@@ -1,15 +1,16 @@
 import React from "react"
+import axios from "axios"
 
 export default class extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { currentItem: null }
+        this.state = { currentItem: null, similar: [] }
     }
 
     // the notifyParent argument is used to control recursive
     // calls to props.onHide
     hide(notifyParent = true) {
-        this.setState({ show: false })
+        this.setState({ show: false, similar: [] })
         if (notifyParent) {
             this.props.onHide()
         }
@@ -17,6 +18,7 @@ export default class extends React.Component {
 
     show(reme) {
         this.setState({ show: true, currentItem: reme })
+        this.fetchSimilar(reme)
     }
 
     replace(reme) {
@@ -26,6 +28,19 @@ export default class extends React.Component {
         }
 
         this.setState({ currentItem: reme })
+        this.fetchSimilar(reme)
+    }
+
+    fetchSimilar(reme) {
+        const endPoint = `https://reme.degreat.co.uk/api/similar/${reme.id}`
+
+        axios.get(endPoint)
+            .then(response => {
+                this.setState({similar: response.data})
+            })
+            .catch(error => {
+
+            })
     }
 
     download(reme) {
@@ -75,10 +90,10 @@ export default class extends React.Component {
                         <div>
                             <p className="title is-size-6">Similar Remes</p>
                             <div className="columns is-multiline is-mobile">
-                                {[1, 2, 3, 4, 5, 6].map((item, index) => {
+                                {this.state.similar.map((item) => {
                                     return (
-                                        <div className="column is-half" key={index}>
-                                            <div className="reme-image-small" style={{ backgroundImage: `url("https://via.placeholder.com/300")` }} onClick={() => this.replace(item)}></div>
+                                        <div className="column is-half" key={item.id}>
+                                            <div className="reme-image-small" style={{ backgroundImage: `url(${item.media})` }} onClick={() => this.replace(item)}></div>
                                         </div>
                                     )
                                 })}

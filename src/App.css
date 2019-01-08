@@ -8,6 +8,7 @@
 .reme-image-small {
   background-size: cover;
   height: 200px;
+  border-radius: 8px;
   cursor: pointer;
 }
 

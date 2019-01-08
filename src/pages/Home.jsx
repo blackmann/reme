@@ -10,8 +10,8 @@ import sample from "../sample.jpg"
 class Home extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { 
-            showModal: false ,
+        this.state = {
+            showModal: false,
             fetching: false,
             popularRemes: [],
             recentRemes: [],
@@ -41,8 +41,20 @@ class Home extends React.Component {
         this.props.history.push("/upload/")
     }
 
+    onRemeDownload(reme) {
+        const endPoint = `https://reme.degreat.co.uk/api/download/${reme.id}/`
+
+        axios.get(endPoint)
+            .then(response => {
+
+            })
+            .then(error => {
+
+            })
+    }
+
     fetchRemes(sort) {
-        this.setState({fetching: true})
+        this.setState({ fetching: true })
 
         let page = sort === 'popular' ? this.popularRemesPage : this.recentRemesPage
         const endPoint = `https://reme.degreat.co.uk/api/${sort}/?page=${page}`
@@ -70,17 +82,17 @@ class Home extends React.Component {
 
                 }
 
-                this.setState({fetching: false})
+                this.setState({ fetching: false })
             })
             .catch(error => {
-                this.setState({fetching: false})
+                this.setState({ fetching: false })
             })
 
     }
 
     switchTo(e, to) {
         e.preventDefault()
-        this.setState({sort: to})
+        this.setState({ sort: to })
         this.fetchIfZero(to)
     }
 
@@ -160,8 +172,8 @@ class Home extends React.Component {
                             <div className="column">
                                 <div className="tabs is-centered">
                                     <ul>
-                                        <li className={this.state.sort === 'popular' ?"is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'popular')}>Popular</a></li>
-                                        <li className={this.state.sort === 'recent' ?"is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'recent')}>Recently Uploaded</a></li>
+                                        <li className={this.state.sort === 'popular' ? "is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'popular')}>Popular</a></li>
+                                        <li className={this.state.sort === 'recent' ? "is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'recent')}>Recently Uploaded</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -171,7 +183,10 @@ class Home extends React.Component {
                     <div className="container" style={{ marginTop: 15 }}>
                         <div className="columns is-multiline">
                             {remes.map((item) => {
-                                return <RemeItem reme={item} key={item.id} onSelect={() => this.navigateToDetail(item)} />
+                                return <RemeItem reme={item}
+                                    key={item.id}
+                                    onSelect={() => this.navigateToDetail(item)}
+                                    onDownload={(r) => this.onRemeDownload(r)} />
                             })}
                         </div>
 
@@ -179,13 +194,15 @@ class Home extends React.Component {
                             {this.state.fetching ? (
                                 <button className="button is-loading">Fetching Remes...</button>
                             ) : (
-                                <button className="button has-text-centered" onClick={() => this.fetchRemes(this.state.sort)}>Fetch more remes</button>
-                            )}
+                                    <button className="button has-text-centered" onClick={() => this.fetchRemes(this.state.sort)}>Fetch more remes</button>
+                                )}
                         </div>
                     </div>
                 </section>
 
-                <RemeDetail onHide={() => this.goBack()} ref={ (node) => this.detailView = node }/>
+                <RemeDetail onHide={() => this.goBack()}
+                    ref={(node) => this.detailView = node}
+                    onDownload={(r) => this.onRemeDownload(r)} />
             </div>
         )
     }

@@ -5,20 +5,20 @@ const sampleTags = "laugh,hilarious,crazy,unknown,messi".split(",")
 export default class extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {currentItem: null}
+        this.state = { currentItem: null }
     }
 
     // the notifyParent argument is used to control recursive
     // calls to props.onHide
-    hide(notifyParent=true) {
-        this.setState({show: false})
+    hide(notifyParent = true) {
+        this.setState({ show: false })
         if (notifyParent) {
             this.props.onHide()
         }
     }
 
     show(reme) {
-        this.setState({show: true, currentItem: reme})
+        this.setState({ show: true, currentItem: reme })
     }
 
     replace(reme) {
@@ -27,7 +27,11 @@ export default class extends React.Component {
             return
         }
 
-        this.setState({currentItem: reme})
+        this.setState({ currentItem: reme })
+    }
+
+    download(reme) {
+        this.props.onDownload(reme)
     }
 
     render() {
@@ -52,7 +56,14 @@ export default class extends React.Component {
                             </div>
 
                             <div style={{ float: 'right' }}>
-                                <a href="/" className="button"><i className="fas fa-arrow-down"></i>&nbsp;Download</a>
+                                <a href={reme.media}
+                                    download
+                                    target="_blank"
+                                    className="button"
+                                    rel="noopener noreferrer"
+                                    onClick={() => this.download(reme)}>
+                                    <i className="fas fa-arrow-down"></i>&nbsp;Download
+                                </a>
                             </div>
                         </div>
 

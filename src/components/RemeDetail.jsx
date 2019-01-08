@@ -8,8 +8,17 @@ export default class extends React.Component {
         this.state = {currentItem: null}
     }
 
-    hide() {
-        this.props.onHide()
+    // the notifyParent argument is used to control recursive
+    // calls to props.onHide
+    hide(notifyParent=true) {
+        this.setState({show: false})
+        if (notifyParent) {
+            this.props.onHide()
+        }
+    }
+
+    show(reme) {
+        this.setState({show: true, currentItem: reme})
     }
 
     replace(reme) {
@@ -22,7 +31,12 @@ export default class extends React.Component {
     }
 
     render() {
-        const modalClass = this.props.show ? "modal is-active" : "modal"
+        const modalClass = this.state.show ? "modal is-active" : "modal"
+        const reme = this.state.currentItem
+
+        if (reme === null) {
+            return <div></div>
+        }
 
         return (
             <div className={modalClass}>
@@ -30,11 +44,11 @@ export default class extends React.Component {
                 <div className="modal-content">
                     <div className="box" style={{ paddingBottom: 50 }}>
                         <div className="has-text-centered">
-                            <img src="https://via.placeholder.com/900x500" alt="" style={{ borderRadius: 8 }} />
+                            <img src={reme.media} alt="" style={{ borderRadius: 8 }} />
                         </div>
                         <div className="reme-action is-clearfix">
                             <div style={{ float: 'left' }}>
-                                <i className="far fa-arrow-alt-circle-down has-text-link">&nbsp;</i><span className="has-text-grey">{parseInt((Math.random() * 100))}</span>
+                                <i className="far fa-arrow-alt-circle-down has-text-link">&nbsp;</i><span className="has-text-grey">{reme.downloads}</span>
                             </div>
 
                             <div style={{ float: 'right' }}>

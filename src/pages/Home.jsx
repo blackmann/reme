@@ -1,5 +1,6 @@
 import React from "react"
 import { withRouter } from "react-router-dom"
+import axios from "axios"
 import RemeItem from "../components/RemeItem"
 import RemeDetail from "../components/RemeDetail"
 
@@ -9,37 +10,30 @@ import sample from "../sample.jpg"
 class Home extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { showModal: false }
+        this.state = { 
+            showModal: false ,
+            fetching: false,
+            popularRemes: [],
+            recentRemes: [],
+            sort: 'popular', // or recent
+        }
+
+        this.popularRemesPage = 0
+        this.recentRemesPage = 0
+        this.currentReme = null
     }
 
     showDetail() {
-        this.setState({ showModal: true })
-    }
-
-    hideDetail() {
-        this.setState({ showModal: false })
+        this.detailView.show(this.currentReme)
     }
 
     goBack() {
         this.props.history.goBack()
     }
 
-    navigateToDetail() {
+    navigateToDetail(item) {
+        this.currentReme = item
         this.props.history.push("/detail/")
-    }
-
-    componentDidMount() {
-        this.unlisten = this.props.history.listen((location) => {
-            if (location.pathname !== "/detail/") {
-                this.hideDetail()
-            }
-
-            if (location.pathname === "/detail/") {
-                // check if there is a current item, then show the modal, else
-                // hide it
-                this.showDetail()
-            }
-        })
     }
 
     navigateToUpload(event) {
@@ -47,11 +41,81 @@ class Home extends React.Component {
         this.props.history.push("/upload/")
     }
 
+    fetchRemes(sort) {
+        this.setState({fetching: true})
+
+        let page = sort === 'popular' ? this.popularRemesPage : this.recentRemesPage
+        const endPoint = `https://reme.degreat.co.uk/api/${sort}/?page=${page}`
+
+        axios.get(endPoint)
+            .then(response => {
+                const data = response.data
+
+                if (sort === 'popular') {
+                    if (data.length > 0) {
+                        this.setState({
+                            popularRemes: [...this.state.popularRemes, ...data]
+                        })
+                        this.popularRemesPage += 1
+                    }
+
+                    // TODO: indicate end of page
+                } else if (sort === 'recent') {
+                    if (data.length > 0) {
+                        this.setState({
+                            recentRemes: [...this.state.recentRemes, ...data]
+                        })
+                        this.recentRemesPage += 1
+                    }
+
+                }
+
+                this.setState({fetching: false})
+            })
+            .catch(error => {
+                this.setState({fetching: false})
+            })
+
+    }
+
+    switchTo(e, to) {
+        e.preventDefault()
+        this.setState({sort: to})
+        this.fetchIfZero(to)
+    }
+
+    fetchIfZero(sort) {
+        const _page = sort === 'popular' ? this.popularRemesPage : this.recentRemesPage
+        if (_page === 0) {
+            this.fetchRemes(sort)
+        }
+    }
+
+    componentDidMount() {
+        this.unlisten = this.props.history.listen((location) => {
+            if (location.pathname !== "/detail/") {
+                this.detailView.hide(false)
+            }
+
+            if (location.pathname === "/detail/") {
+                // check if there is a current item, then show the modal, else
+                // hide it
+                if (this.currentReme !== null) {
+                    this.showDetail()
+                }
+            }
+        })
+
+        this.fetchIfZero(this.state.sort)
+    }
+
     componentWillUnmount() {
         this.unlisten()
     }
 
     render() {
+        const remes = this.state.sort === 'popular' ? this.state.popularRemes : this.state.recentRemes
+
         return (
             <div>
                 <section className="section has-background-black">
@@ -96,8 +160,8 @@ class Home extends React.Component {
                             <div className="column">
                                 <div className="tabs is-centered">
                                     <ul>
-                                        <li className="is-active"><a href="/">Popular</a></li>
-                                        <li><a href="/">Recently Uploaded</a></li>
+                                        <li className={this.state.sort === 'popular' ?"is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'popular')}>Popular</a></li>
+                                        <li className={this.state.sort === 'recent' ?"is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'recent')}>Recently Uploaded</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -106,14 +170,22 @@ class Home extends React.Component {
 
                     <div className="container" style={{ marginTop: 15 }}>
                         <div className="columns is-multiline">
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((item) => {
-                                return <RemeItem key={item} onSelect={() => this.navigateToDetail()} />
+                            {remes.map((item) => {
+                                return <RemeItem reme={item} key={item.id} onSelect={() => this.navigateToDetail(item)} />
                             })}
+                        </div>
+
+                        <div className="has-text-centered">
+                            {this.state.fetching ? (
+                                <button className="button is-loading">Fetching Remes...</button>
+                            ) : (
+                                <button className="button has-text-centered" onClick={() => this.fetchRemes(this.state.sort)}>Fetch more remes</button>
+                            )}
                         </div>
                     </div>
                 </section>
 
-                <RemeDetail show={this.state.showModal} onHide={() => this.goBack()} />
+                <RemeDetail onHide={() => this.goBack()} ref={ (node) => this.detailView = node }/>
             </div>
         )
     }

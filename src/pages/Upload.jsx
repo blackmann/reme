@@ -1,11 +1,26 @@
 import React from "react"
+import axios from "axios"
+import { Link } from "react-router-dom"
+
 import remeBlack from "../reme-black.png"
+
+
+const CLOUDINARY_UPLOAD_PRESET = "tc04qelg"
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/blackground-labs/image/upload/"
 
 class Upload extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { tags: [], currentTagInput: "" }
+        this.state = {
+            tags: [],
+            currentTagInput: "",
+            notification: "",
+            uploading: false,
+            selectedImageFile: null, // this is for previewing
+            uploadFile: null,
+            uploadSuccess: false
+        }
     }
 
     addTag() {
@@ -32,8 +47,82 @@ class Upload extends React.Component {
     }
 
     handleFile(e) {
-        const imageFile = URL.createObjectURL(e.target.files[0])
-        this.setState({selectedImageFile: imageFile})
+        const selectedFile = e.target.files[0]
+        const fileSize = selectedFile.size / 1000
+        if (fileSize <= 300) {
+            let fileReader = new FileReader();
+            fileReader.onloadend = () => {
+                this.setState({ uploadFile: fileReader.result })
+            };
+
+            fileReader.readAsDataURL(selectedFile)
+
+            const imageFile = URL.createObjectURL(selectedFile)
+            this.setState({ selectedImageFile: imageFile, notification: '' })
+        } else {
+            this.setState({ notification: `The size of the image you selected is above the limit of 250kb. Please select another image.` })
+        }
+    }
+
+    validateAndUpload() {
+        if (this.state.uploading) {
+            return
+        }
+
+        this.setState({uploadSuccess: false})
+
+        if (this.state.uploadFile === null) {
+            this.setState({ notification: `You did not provide an image` })
+            return
+        }
+
+        if (this.state.tags.length < 1) {
+            this.setState({ notification: `Provide some tags to make searching easier for this reme` })
+            return
+        }
+
+        this.setState({ notification: '' })
+
+        this.upload()
+    }
+
+    upload() {
+        this.setState({ uploading: true })
+
+        let formData = new FormData();
+
+        formData.append("file", this.state.uploadFile);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        axios.post(CLOUDINARY_URL, formData)
+            .then(response => {
+                let itemImage = response.data.url;
+                this.submitForm(itemImage)
+            })
+            .catch(error => {
+                this.setState({uploading: false, notification: 'Failed to upload the reme. Try again!'})
+            });
+    }
+
+    submitForm(media) {
+        const data = {
+            media,
+            tags: this.state.tags
+        }
+
+        axios.post("https://reme.degreat.co.uk/api/upload/", data)
+            .then(response => {
+                this.setState({
+                    uploadSuccess: true,
+                    tags: [],
+                    selectedImageFile: null,
+                    uploadFile: null,
+                    uploading: false
+                })
+            })
+            .catch(error => {
+                this.setState({ uploading: false, notification: 'Failed to upload the reme. Try again!' })
+            })
     }
 
     render() {
@@ -44,11 +133,28 @@ class Upload extends React.Component {
                     <br /><br />
                     <p className="title is-size-5">Upload Reme</p>
 
+                    {this.state.uploadSuccess && (
+                        <div className="notification is-primary">
+                            <button className="delete"></button>
+                            Your reme has been uploaded successfully. Find it in the Recent section on the homepage.
+                            <Link to="/">Go Home</Link>
+                        </div>
+                    )}
+
                     <div className="columns">
                         <div className="column">
-                            <div className="upload-box" onClick={() => this.showPicker()} style={{backgroundImage: `url(${this.state.selectedImageFile})`}}>
+                            <div className="upload-box" onClick={() => this.showPicker()} style={{ backgroundImage: `url(${this.state.selectedImageFile})` }}>
                                 <p className="is-size-5">Click here to pick image</p>
                             </div>
+                            <br />
+                            {this.state.notification && (
+                                <div className="notification is-danger">
+                                    <button className="delete"
+                                        onClick={() => this.setState({ notification: "" })}>
+                                    </button>
+                                    {this.state.notification}
+                                </div>
+                            )}
                         </div>
 
                         <div className="column">
@@ -91,7 +197,14 @@ class Upload extends React.Component {
                                 </div>
                             </div>
 
-                            <button className="button is-link"><i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload Reme</button>
+                            {this.state.uploading ? (
+                                <button className="button is-link is-loading">Uploading</button>
+                            ) : (
+                            <button className="button is-link" onClick={() => this.validateAndUpload()}>
+                                <i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload
+                            </button>
+                            ) }
+                            
 
                         </div>
                     </div>

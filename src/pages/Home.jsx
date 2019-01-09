@@ -96,7 +96,8 @@ class Home extends React.Component {
         let endPoint = `https://reme.degreat.co.uk/api/${sort}/?page=${page}`
 
         if (sort === 'search') {
-            endPoint += `&q=${this.state.searchKey}`
+            const _searchKey = this.state.searchKey.toLowerCase()
+            endPoint += `&q=${_searchKey}`
         }
 
         axios.get(endPoint)

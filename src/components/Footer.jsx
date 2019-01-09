@@ -1,6 +1,8 @@
 import React from "react"
-import reme from "../reme.png"
 import { Link } from "react-router-dom"
+
+import reme from "../reme.png"
+import withBulma from "../made-with-bulma--dark.png"
 
 export default class extends React.Component {
 
@@ -24,6 +26,8 @@ export default class extends React.Component {
                                 <img src={reme} alt="Reme by GR" width="150"/>
                                 <p className="has-text-grey-light">Reme by GR<span role="img" aria-label="rock n roll">🤟</span></p>
                                 <p className="has-text-grey-light">&copy; 2019 <a href="https://degreat.co.uk/" className="has-text-grey-light">De-Great Yartey</a></p>
+                                <br/>
+                                <a href="https://bulma.io/" target="_blank"><img src={withBulma} alt="Made with Bulma" width="150"/></a>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import RemeDetail from "../components/RemeDetail"
 
 import reme from "../reme.png"
 import sample from "../sample.jpg"
+import About from "../components/About";
 
 class Home extends React.Component {
     constructor(props) {
@@ -186,6 +187,11 @@ class Home extends React.Component {
         this.unlisten()
     }
 
+    showAbout(e) {
+        e.preventDefault()
+        this.aboutDialog.show()
+    }
+
     render() {
         const remes = this.getRemes(this.state.sort)
 
@@ -218,7 +224,8 @@ class Home extends React.Component {
                                     </a>
                                     <a href="/"
                                         className="button is-dark is-inverted is-outlined"
-                                        style={{ marginLeft: 10 }}>
+                                        style={{ marginLeft: 10 }}
+                                        onClick={(e) => this.showAbout(e)}>
                                         About&nbsp;<strong>Reme by GR</strong>
                                     </a>
                                 </div>
@@ -297,6 +304,8 @@ class Home extends React.Component {
                 <RemeDetail onHide={() => this.goBack()}
                     ref={(node) => this.detailView = node}
                     onDownload={(r) => this.onRemeDownload(r)} />
+
+                <About ref={(node) => this.aboutDialog = node}/>
             </div>
         )
     }

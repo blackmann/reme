@@ -105,9 +105,13 @@ class Upload extends React.Component {
     }
 
     submitForm(media) {
+        const _tags = this.state.tags.map(item => {
+            return item.toLowerCase()
+        })
+        
         const data = {
             media,
-            tags: this.state.tags
+            tags: _tags
         }
 
         axios.post("https://reme.degreat.co.uk/api/upload/", data)

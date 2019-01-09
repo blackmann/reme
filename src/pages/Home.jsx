@@ -18,10 +18,12 @@ class Home extends React.Component {
             recentRemes: [],
             searchResults: [],
             sort: 'popular', // or recent or search
+            searchKey: ''
         }
 
         this.popularRemesPage = 0
         this.recentRemesPage = 0
+        this.searchPage = 0
         this.currentReme = null
     }
 
@@ -61,11 +63,41 @@ class Home extends React.Component {
         })
     }
 
+    getPage(sort) {
+        switch (sort) {
+            case 'popular':
+                return this.popularRemesPage
+            case 'recent':
+                return this.recentRemesPage
+            case 'search':
+                return this.searchPage
+            default:
+                return 0
+        }
+    }
+
+    getRemes(sort) {
+        switch (sort) {
+            case 'popular':
+                return this.state.popularRemes
+            case 'recent':
+                return this.state.recentRemes
+            case 'search':
+                return this.state.searchResults
+            default:
+                return []
+        }
+    }
+
     fetchRemes(sort) {
         this.setState({ fetching: true })
 
-        let page = sort === 'popular' ? this.popularRemesPage : this.recentRemesPage
-        const endPoint = `https://reme.degreat.co.uk/api/${sort}/?page=${page}`
+        let page = this.getPage(sort)
+        let endPoint = `https://reme.degreat.co.uk/api/${sort}/?page=${page}`
+
+        if (sort === 'search') {
+            endPoint += `&q=${this.state.searchKey}`
+        }
 
         axios.get(endPoint)
             .then(response => {
@@ -87,7 +119,13 @@ class Home extends React.Component {
                         })
                         this.recentRemesPage += 1
                     }
-
+                } else if (sort === 'search') {
+                    if (data.length > 0) {
+                        this.setState({
+                            searchResults: [...this.state.searchResults, ...data]
+                        })
+                        this.searchPage += 1
+                    }
                 }
 
                 this.setState({ fetching: false })
@@ -100,14 +138,25 @@ class Home extends React.Component {
 
     switchTo(e, to) {
         e.preventDefault()
-        this.setState({ sort: to })
+        this.setState({ sort: to, searchKey: '' })
         this.fetchIfZero(to)
     }
 
     fetchIfZero(sort) {
-        const _page = sort === 'popular' ? this.popularRemesPage : this.recentRemesPage
+        const _page = this.getPage(sort)
         if (_page === 0) {
             this.fetchRemes(sort)
+        }
+    }
+
+    search() {
+        const _keyword = this.state.searchKey.trim()
+
+        if (_keyword.length > 0) {
+            this.searchPage = 0
+            this.setState({ sort: 'search', searchResults: [] })
+
+            this.fetchRemes('search')
         }
     }
 
@@ -137,7 +186,7 @@ class Home extends React.Component {
     }
 
     render() {
-        const remes = this.state.sort === 'popular' ? this.state.popularRemes : this.state.recentRemes
+        const remes = this.getRemes(this.state.sort)
 
         return (
             <div>
@@ -147,15 +196,30 @@ class Home extends React.Component {
                         <br /><br />
                         <div className="columns">
                             <div className="column">
-                                <p className="title is-size-2 is-size-3-mobile has-text-white">Excite your fans<span role="img" aria-label="Rock n roll">🤟</span></p>
-                                <p className="title is-size-2 has-text-white-ter">Add reactions to your funny <span role="img" aria-label="Funny">🤪</span> and dramatic <span role="img" aria-label="Dramatic">🤯</span> tweets.</p>
-                                <p className="is-size-4 is-size-5-mobile has-text-grey-lighter">Find reaction memes by the kind of reaction or celebrity or movie name. Easily!</p>
+                                <p className="title is-size-2 is-size-3-mobile has-text-white">
+                                    Excite your fans<span role="img" aria-label="Rock n roll">🤟</span>
+                                </p>
+                                <p className="title is-size-2 has-text-white-ter">
+                                    Add reactions to your funny <span role="img" aria-label="Funny">🤪</span>
+                                    &nbsp; and dramatic <span role="img" aria-label="Dramatic">🤯</span> tweets.
+                                </p>
+                                <p className="is-size-4 is-size-5-mobile has-text-grey-lighter">
+                                    Find reaction memes by the kind of reaction or celebrity or movie name. Easily!
+                                </p>
 
                                 <br />
 
                                 <div style={{ display: 'inline-block' }}>
-                                    <a href="/" className="button is-link" onClick={(e) => this.navigateToUpload(e)}><i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload yours</a>
-                                    <a href="/" className="button is-dark is-inverted is-outlined" style={{ marginLeft: 10 }}>About&nbsp;<strong>Reme by GR</strong></a>
+                                    <a href="/"
+                                        className="button is-link"
+                                        onClick={(e) => this.navigateToUpload(e)}>
+                                        <i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload yours
+                                    </a>
+                                    <a href="/"
+                                        className="button is-dark is-inverted is-outlined"
+                                        style={{ marginLeft: 10 }}>
+                                        About&nbsp;<strong>Reme by GR</strong>
+                                    </a>
                                 </div>
                             </div>
 
@@ -172,7 +236,18 @@ class Home extends React.Component {
                             <div className="column is-three-quarters">
                                 <div className="field">
                                     <p className="control has-icons-left">
-                                        <input type="text" className="input is-rounded" placeholder="Search by kind of reaction, celebrity, movie or animal" />
+                                        <input type="text"
+                                            className="input is-rounded"
+                                            onChange={e => {
+                                                this.setState({searchKey: e.target.value})
+                                            }}
+                                            value={this.state.searchKey}
+                                            onKeyPress={e => {
+                                                if (e.key === 'Enter') {
+                                                    this.search()
+                                                }
+                                            }}
+                                            placeholder="Search by kind of reaction, celebrity, movie or animal" />
                                         <span className="icon is-small is-left">
                                             <i className="fas fa-search"></i>
                                         </span>
@@ -183,8 +258,12 @@ class Home extends React.Component {
                             <div className="column">
                                 <div className="tabs is-centered">
                                     <ul>
-                                        <li className={this.state.sort === 'popular' ? "is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'popular')}>Popular</a></li>
-                                        <li className={this.state.sort === 'recent' ? "is-active" : ""}><a href="/" onClick={(e) => this.switchTo(e, 'recent')}>Recently Uploaded</a></li>
+                                        <li className={this.state.sort === 'popular' ? "is-active" : ""}>
+                                            <a href="/" onClick={(e) => this.switchTo(e, 'popular')}>Popular</a>
+                                        </li>
+                                        <li className={this.state.sort === 'recent' ? "is-active" : ""}>
+                                            <a href="/" onClick={(e) => this.switchTo(e, 'recent')}>Recently Uploaded</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -205,7 +284,10 @@ class Home extends React.Component {
                             {this.state.fetching ? (
                                 <button className="button is-loading">Fetching Remes...</button>
                             ) : (
-                                    <button className="button has-text-centered" onClick={() => this.fetchRemes(this.state.sort)}>Fetch more remes</button>
+                                    <button className="button has-text-centered"
+                                        onClick={() => this.fetchRemes(this.state.sort)}>
+                                        Fetch more remes
+                                    </button>
                                 )}
                         </div>
                     </div>

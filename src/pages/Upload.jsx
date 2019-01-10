@@ -43,7 +43,7 @@ class Upload extends React.Component {
     }
 
     showPicker() {
-        this.imageInput.click()
+        !this.state.uploading && this.imageInput.click()
     }
 
     handleFile(e) {
@@ -178,6 +178,7 @@ class Upload extends React.Component {
                                         <input type="text"
                                             value={this.state.currentTagInput}
                                             className="input"
+                                            disabled={this.state.uploading}
                                             placeholder="Type a tag and press Enter key or Add Tag"
                                             onChange={(e) => this.setState({ currentTagInput: e.target.value })}
                                             onKeyPress={(event) => {
@@ -189,12 +190,12 @@ class Upload extends React.Component {
                                 </div>
 
                                 <div className="column">
-                                    <button className="button" onClick={() => this.addTag()}>Add tag</button>
+                                    <button disabled={this.state.uploading} className="button" onClick={() => this.addTag()}>Add tag</button>
                                 </div>
                             </div>
 
                             {this.state.uploading ? (
-                                <button className="button is-link is-loading">Uploading</button>
+                                <button className="button is-link is-loading" disabled>Uploading</button>
                             ) : (
                             <button className="button is-link" onClick={() => this.validateAndUpload()}>
                                 <i className="fas fa-cloud-upload-alt"></i>&nbsp;Upload
